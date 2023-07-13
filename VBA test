@@ -1,0 +1,36 @@
+Sub ColorCodeItems()
+    Dim sourceSheet As Worksheet
+    Dim targetSheet As Worksheet
+    Dim sourceRange As Range
+    Dim targetRange As Range
+    Dim cell As Range
+    Dim lookupValue As Variant
+    Dim lookupRange As Range
+    
+    ' Set the source and target sheets
+    Set sourceSheet = ThisWorkbook.Sheets("Sheet1") ' Replace "Sheet1" with your source sheet name
+    Set targetSheet = ThisWorkbook.Sheets("Sheet2") ' Replace "Sheet2" with your target sheet name
+    
+    ' Set the source and target ranges
+    Set sourceRange = sourceSheet.Range("A2:A" & sourceSheet.Cells(Rows.Count, 1).End(xlUp).Row) ' Column A in the source sheet
+    Set targetRange = targetSheet.Range("A2:B" & targetSheet.Cells(Rows.Count, 1).End(xlUp).Row) ' Columns A and B in the target sheet
+    
+    ' Loop through each cell in the source range
+    For Each cell In sourceRange
+        lookupValue = cell.Value
+        ' Look for the matching value in the target range (Column A)
+        Set lookupRange = targetRange.Columns(1).Find(lookupValue, LookIn:=xlValues, LookAt:=xlWhole)
+        
+        ' If a match is found
+        If Not lookupRange Is Nothing Then
+            ' Check the value in the adjacent cell (Column B)
+            If lookupRange.Offset(0, 1).Value = "Up" Then
+                ' Color the source cell green
+                cell.Interior.Color = RGB(0, 255, 0) ' Green
+            ElseIf lookupRange.Offset(0, 1).Value = "Down" Then
+                ' Color the source cell red
+                cell.Interior.Color = RGB(255, 0, 0) ' Red
+            End If
+        End If
+    Next cell
+End Sub
